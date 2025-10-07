@@ -4,13 +4,6 @@ services:
     image: ghcr.io/toeverything/affine:${AFFINE_REVISION:-stable}
     ports:
       - '3010:3010'
-    depends_on:
-      redis:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      affine_migration:
-        condition: service_started
     volumes:
       # custom configurations
       - ${UPLOAD_LOCATION}:/root/.affine/storage
@@ -34,11 +27,6 @@ services:
       - DATABASE_URL=postgresql://postgres@postgres:5432/${DB_DATABASE:-affine}
       - AFFINE_INDEXER_ENABLED=false
       - AFFINE_SERVER_EXTERNAL_URL=${SERVICE_URL_AFFINE}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
     restart: on-failure:3
 
   redis:
