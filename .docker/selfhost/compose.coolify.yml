@@ -20,6 +20,12 @@ services:
       - DATABASE_URL=postgresql://postgres@postgres:5432/${DB_DATABASE:-affine}
       - AFFINE_INDEXER_ENABLED=false
       - AFFINE_SERVER_EXTERNAL_URL=${SERVICE_URL_AFFINE}
+    healthcheck:
+      test: ['CMD', 'node', '-e', "require('http').get('http://localhost:3010/', (res) => process.exit(res.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     restart: unless-stopped
 
   affine_migration:
