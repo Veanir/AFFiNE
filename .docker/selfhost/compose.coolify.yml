@@ -3,7 +3,7 @@ services:
   affine:
     image: ghcr.io/toeverything/affine:${AFFINE_REVISION:-stable}
     ports:
-      - '${PORT:-3010}:3010'
+      - '3010:3010'
     depends_on:
       redis:
         condition: service_healthy
@@ -20,7 +20,6 @@ services:
       - DATABASE_URL=postgresql://postgres@postgres:5432/${DB_DATABASE:-affine}
       - AFFINE_INDEXER_ENABLED=false
       - AFFINE_SERVER_EXTERNAL_URL=${SERVICE_URL_AFFINE}
-      - SERVICE_FQDN_AFFINE_3010=/
     restart: unless-stopped
 
   affine_migration:
