@@ -1,0 +1,32 @@
+{
+  "name": "@affine/whiteboard",
+  "version": "0.22.4",
+  "description": "AFFiNE Whiteboard kiosk web application",
+  "private": true,
+  "browser": "src/index.tsx",
+  "scripts": {
+    "build": "affine bundle",
+    "dev": "affine bundle --dev"
+  },
+  "dependencies": {
+    "@affine/component": "workspace:*",
+    "@affine/core": "workspace:*",
+    "@affine/env": "workspace:*",
+    "@affine/i18n": "workspace:*",
+    "@affine/nbstore": "workspace:*",
+    "@affine/track": "workspace:*",
+    "@emotion/react": "^11.14.0",
+    "@sentry/react": "^9.2.0",
+    "@toeverything/infra": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^6.28.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.3",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.2"
+  }
+}

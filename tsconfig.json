@@ -140,6 +140,7 @@
     { "path": "./packages/frontend/apps/ios" },
     { "path": "./packages/frontend/apps/mobile" },
     { "path": "./packages/frontend/apps/web" },
+    { "path": "./packages/frontend/apps/whiteboard" },
     { "path": "./packages/frontend/component" },
     { "path": "./packages/frontend/core" },
     { "path": "./packages/frontend/electron-api" },

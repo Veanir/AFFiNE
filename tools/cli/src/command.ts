@@ -30,9 +30,9 @@ export abstract class Command extends BaseCommand<CliContext> {
 }
 
 export abstract class PackageCommand extends Command {
-  protected availablePackageNameArgs = (
-    Workspace.PackageNames as string[]
-  ).concat(Array.from(AliasToPackage.keys()));
+  protected availablePackageNameArgs = (Workspace.PackageNames as string[])
+    .concat(['@affine/whiteboard'])
+    .concat(Array.from(AliasToPackage.keys()));
   protected packageNameValidator = t.isOneOf(
     this.availablePackageNameArgs.map(k => t.isLiteral(k))
   );
@@ -93,7 +93,10 @@ export abstract class PackagesCommand extends Command {
 }
 
 export abstract class PackageSelectorCommand extends Command {
-  protected availablePackages = Workspace.PackageNames;
+  protected availablePackages = Workspace.PackageNames as (
+    | (typeof Workspace.PackageNames)[number]
+    | '@affine/whiteboard'
+  )[];
 
   protected availablePackageNameArgs = (
     Workspace.PackageNames as string[]

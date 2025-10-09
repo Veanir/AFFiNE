@@ -11,6 +11,7 @@ export const PackageToDistribution = new Map<
   ['@affine/mobile', 'mobile'],
   ['@affine/ios', 'ios'],
   ['@affine/android', 'android'],
+  ['@affine/whiteboard', 'web'],
 ]);
 
 export const AliasToPackage = new Map<string, PackageName>([
@@ -22,6 +23,7 @@ export const AliasToPackage = new Map<string, PackageName>([
   ['mobile', '@affine/mobile'],
   ['ios', '@affine/ios'],
   ['android', '@affine/android'],
+  ['whiteboard', '@affine/whiteboard'],
   ['server', '@affine/server'],
   ['gql', '@affine/graphql'],
   ...PackageList.map(

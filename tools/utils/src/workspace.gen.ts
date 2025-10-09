@@ -1324,6 +1324,19 @@ export const PackageList = [
     ],
   },
   {
+    location: 'packages/frontend/apps/whiteboard',
+    name: '@affine/whiteboard',
+    workspaceDependencies: [
+      'packages/frontend/component',
+      'packages/frontend/core',
+      'packages/common/env',
+      'packages/frontend/i18n',
+      'packages/common/nbstore',
+      'packages/frontend/track',
+      'packages/common/infra',
+    ],
+  },
+  {
     location: 'packages/frontend/component',
     name: '@affine/component',
     workspaceDependencies: [
@@ -1581,6 +1594,7 @@ export type PackageName =
   | '@affine/ios'
   | '@affine/mobile'
   | '@affine/web'
+  | '@affine/whiteboard'
   | '@affine/component'
   | '@affine/core'
   | '@affine/electron-api'
