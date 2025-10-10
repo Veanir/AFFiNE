@@ -17,6 +17,7 @@ import { FrameworkScope } from '@toeverything/infra';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { AppModeSwitcher } from '../../components/app-mode-switcher';
 import {
   getOrCreateBoardDoc,
   getOrCreateLocalWhiteboardWorkspace,
@@ -89,6 +90,7 @@ export const Component = () => {
           </Button>
         </div>
       )}
+      <AppModeSwitcher />
     </div>
   );
 };

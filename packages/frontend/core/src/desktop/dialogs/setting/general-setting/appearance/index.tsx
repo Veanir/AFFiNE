@@ -6,10 +6,15 @@ import {
   SettingWrapper,
 } from '@affine/component/setting-components';
 import { LanguageMenu } from '@affine/core/components/affine/language-menu';
+import {
+  type AppMode,
+  AppModeService,
+} from '@affine/core/modules/app-mode/service';
 import { TraySettingService } from '@affine/core/modules/editor-setting/services/tray-settings';
 import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
+import { nanoid } from 'nanoid';
 import { useTheme } from 'next-themes';
 import { useCallback, useMemo } from 'react';
 
@@ -83,6 +88,16 @@ const MenubarSetting = () => {
 
 export const AppearanceSettings = () => {
   const t = useI18n();
+  const appMode = useService(AppModeService);
+  const currentMode = useLiveData(appMode.mode$);
+  const modeItems = useMemo<RadioItem[]>(
+    () => [
+      { value: 'auto', label: 'Auto' },
+      { value: 'regular', label: 'Regular' },
+      { value: 'whiteboard', label: 'Whiteboard' },
+    ],
+    []
+  );
 
   const featureFlagService = useService(FeatureFlagService);
   const enableThemeEditor = useLiveData(
@@ -125,6 +140,29 @@ export const AppearanceSettings = () => {
           </SettingRow>
         ) : null}
         {enableThemeEditor ? <ThemeEditorSetting /> : null}
+      </SettingWrapper>
+
+      <SettingWrapper title={'App Mode'}>
+        <SettingRow
+          name={'Choose how AFFiNE runs on this device'}
+          desc={'Switch between Regular (desktop) and Whiteboard (kiosk).'}
+        >
+          <RadioGroup
+            items={modeItems}
+            value={currentMode as string}
+            width={250}
+            className={settingWrapper}
+            onChange={(value: string) => {
+              const v = value as AppMode;
+              appMode.setPreferredMode(v);
+              if (v === 'whiteboard') {
+                location.href = `/board/${nanoid()}`;
+              } else if (v === 'regular') {
+                location.href = '/';
+              }
+            }}
+          />
+        </SettingRow>
       </SettingWrapper>
 
       {BUILD_CONFIG.isWeb && !environment.isMobile ? (

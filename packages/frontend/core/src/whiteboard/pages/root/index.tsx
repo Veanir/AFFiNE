@@ -1,12 +1,19 @@
 import { NotificationCenter } from '@affine/component';
 import { AppContainer } from '@affine/core/desktop/components/app-container';
+import { configureAppModeModule } from '@affine/core/modules/app-mode';
 import type { Server } from '@affine/core/modules/cloud';
 import { ServersService } from '@affine/core/modules/cloud';
+import type { Framework } from '@toeverything/infra';
 import { FrameworkScope, useLiveData, useService } from '@toeverything/infra';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 export const RootWrapper = () => {
+  // ensure AppModeService is registered in this app too
+  const f = (globalThis as any).framework as Framework | undefined;
+  try {
+    if (f) configureAppModeModule(f);
+  } catch {}
   const serversService = useService(ServersService);
   const server = useLiveData(serversService.server$('affine-cloud')) as
     | Server
