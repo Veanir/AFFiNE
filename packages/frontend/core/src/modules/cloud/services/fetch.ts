@@ -51,17 +51,23 @@ export class FetchService extends Service {
     let res: Response;
 
     try {
-      res = await globalThis.fetch(
-        new URL(input, this.serverService.server.serverMetadata.baseUrl),
-        {
-          ...init,
-          signal: abortController.signal,
-          headers: {
-            ...init?.headers,
-            'x-affine-version': BUILD_CONFIG.appVersion,
-          },
-        }
+      const url = new URL(
+        input,
+        this.serverService.server.serverMetadata.baseUrl
       );
+      const token = await readTokenFromIdb(url.origin);
+      const headers: Record<string, string> = {
+        ...((init?.headers as any) ?? {}),
+        'x-affine-version': BUILD_CONFIG.appVersion,
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      res = await globalThis.fetch(url, {
+        ...init,
+        signal: abortController.signal,
+        headers,
+      });
     } catch (err: any) {
       throw new UserFriendlyError({
         status: 504,
@@ -98,4 +104,32 @@ export class FetchService extends Service {
 
     return res;
   };
+}
+
+async function readTokenFromIdb(httpOrigin: string): Promise<string | null> {
+  return await new Promise(resolve => {
+    const req = indexedDB.open('affine-token', 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('tokens')) {
+        db.createObjectStore('tokens', { keyPath: 'endpoint' });
+      }
+    };
+    req.onsuccess = () => {
+      const db = req.result;
+      const tx = db.transaction('tokens', 'readonly');
+      const store = tx.objectStore('tokens');
+      const getReq = store.get(httpOrigin);
+      getReq.onsuccess = () => {
+        const rec = getReq.result as any;
+        resolve(rec?.token ?? null);
+        db.close();
+      };
+      getReq.onerror = () => {
+        resolve(null);
+        db.close();
+      };
+    };
+    req.onerror = () => resolve(null);
+  });
 }

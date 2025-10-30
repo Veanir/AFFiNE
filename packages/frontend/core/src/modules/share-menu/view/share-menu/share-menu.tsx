@@ -23,6 +23,7 @@ import {
 } from 'react';
 
 import * as styles from './index.css';
+import { GlobalDialogService } from '../../../dialogs';
 import { InviteMemberEditor } from './invite-member-editor/invite-member-editor';
 import { MemberManagement } from './member-management';
 import { ShareExport } from './share-export';
@@ -47,6 +48,7 @@ export enum ShareMenuTab {
 export const ShareMenuContent = (props: ShareMenuProps) => {
   const t = useI18n();
   const [currentTab, setCurrentTab] = useState(ShareMenuTab.Share);
+  const globalDialogService = useService(GlobalDialogService);
 
   const serverService = useService(ServerService);
   const isSelfhosted = useLiveData(
@@ -120,6 +122,7 @@ export const ShareMenuContent = (props: ShareMenuProps) => {
     });
   }, [isOwner, onConfirm, openConfirmModal, t]);
 
+
   if (currentTab === ShareMenuTab.Members) {
     return (
       <MemberManagement
@@ -187,6 +190,20 @@ export const ShareMenuContent = (props: ShareMenuProps) => {
             }}
             {...props}
           />
+          {/* Link Whiteboard action */}
+          <div style={{ marginTop: 12 }}>
+            <Button
+              onClick={() =>
+                globalDialogService.open('link-whiteboard', {
+                  workspaceId: props.workspaceMetadata.id,
+                  docId: props.currentPage.id,
+                })
+              }
+              variant="outline"
+            >
+              Link Whiteboard
+            </Button>
+          </div>
         </Tabs.Content>
         <Tabs.Content value={ShareMenuTab.Export}>
           <ShareExport />

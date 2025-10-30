@@ -23,6 +23,7 @@ import { TagSelectorDialog } from './selectors/tag';
 import { SettingDialog } from './setting';
 import { SignInDialog } from './sign-in';
 import { VerifyEmailDialog } from './verify-email';
+import { LinkWhiteboardDialog } from './link-whiteboard';
 
 const GLOBAL_DIALOGS = {
   'create-workspace': CreateWorkspaceDialog,
@@ -33,6 +34,7 @@ const GLOBAL_DIALOGS = {
   'verify-email': VerifyEmailDialog,
   'enable-cloud': EnableCloudDialog,
   'deleted-account': DeletedAccountDialog,
+  'link-whiteboard': LinkWhiteboardDialog,
 } satisfies {
   [key in keyof GLOBAL_DIALOG_SCHEMA]?: React.FC<
     DialogComponentProps<GLOBAL_DIALOG_SCHEMA[key]>

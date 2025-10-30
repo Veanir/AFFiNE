@@ -38,6 +38,7 @@ export type GLOBAL_DIALOG_SCHEMA = {
     serverId?: string;
   }) => boolean;
   'deleted-account': () => void;
+  'link-whiteboard': (props: { workspaceId: string; docId?: string }) => void;
 };
 
 export type WORKSPACE_DIALOG_SCHEMA = {

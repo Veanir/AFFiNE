@@ -30,6 +30,7 @@ import { RateLimiterModule } from './base/throttler';
 import { WebSocketModule } from './base/websocket';
 import { AccessTokenModule } from './core/access-token';
 import { AuthModule } from './core/auth';
+import { LinkSessionModule } from './core/link-session';
 import { CommentModule } from './core/comment';
 import { ServerConfigModule, ServerConfigResolverModule } from './core/config';
 import { DocStorageModule } from './core/doc';
@@ -170,6 +171,7 @@ export function buildAppModule(env: Env) {
       NotificationModule,
       MailModule
     )
+    .use(LinkSessionModule)
     // renderer server only
     .useIf(() => env.flavors.renderer, DocRendererModule)
     // sync server only

@@ -178,7 +178,13 @@ class SocketManager {
         if (authMethod) {
           authMethod(endpoint, cb);
         } else {
-          cb({});
+          // Fallback to link token if available in window
+          const token = (globalThis as any).__affine_link_token__ as string | undefined;
+          if (token) {
+            cb({ authorization: `Bearer ${token}` });
+          } else {
+            cb({});
+          }
         }
       },
     });

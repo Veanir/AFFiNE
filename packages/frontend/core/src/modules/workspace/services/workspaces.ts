@@ -46,6 +46,26 @@ export class WorkspacesService extends Service {
     return this.workspaceRepo.openByWorkspaceId;
   }
 
+  /**
+   * Open a workspace with an ephemeral access token. The token will be stored per-endpoint
+   * so that REST and websocket calls include it automatically. The token is not persisted beyond session.
+   */
+  async openWithAccessToken(options: { metadata: WorkspaceMetadata; accessToken: string }) {
+    const { metadata, accessToken } = options;
+    // Bind the server for the workspace and write the token for that origin
+    const provider = this.flavoursService.flavours$.value.find(
+      x => x.flavour === metadata.flavour
+    );
+    if (!provider) throw new Error('Unknown workspace flavour');
+    // Determine server base URL from provider
+    const server = (provider as any).server?.serverMetadata?.baseUrl;
+    if (server) {
+      const origin = new URL(server).origin;
+      await writeTokenToIdb(origin, accessToken);
+    }
+    return this.open({ metadata });
+  }
+
   get create() {
     return this.workspaceFactory.create;
   }
@@ -67,4 +87,31 @@ export class WorkspacesService extends Service {
     const profiles = list.map(meta => this.getProfile(meta));
     return profiles;
   }
+}
+
+async function writeTokenToIdb(origin: string, token: string): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    const req = indexedDB.open('affine-token', 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('tokens')) {
+        db.createObjectStore('tokens', { keyPath: 'endpoint' });
+      }
+    };
+    req.onsuccess = () => {
+      const db = req.result;
+      const tx = db.transaction('tokens', 'readwrite');
+      const store = tx.objectStore('tokens');
+      store.put({ endpoint: origin, token });
+      tx.oncomplete = () => {
+        resolve();
+        db.close();
+      };
+      tx.onerror = () => {
+        reject(tx.error as any);
+        db.close();
+      };
+    };
+    req.onerror = () => reject(req.error as any);
+  });
 }
